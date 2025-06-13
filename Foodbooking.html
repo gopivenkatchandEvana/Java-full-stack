@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Food Booking Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f3f4f6;
+    }
+    #login, #app {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    .menu-section {
+      margin-bottom: 20px;
+    }
+    .food-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      margin: 5px 0;
+      background: #f9fafb;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .cart-list {
+      list-style: none;
+      padding: 0;
+    }
+    .cart-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .btn {
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #4338ca;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <button class="btn" onclick="login()">Login</button>
+</div>
+
+<div id="app" style="display: none;">
+  <h1>🍽️ Food Booking Website</h1>
+  <h3 id="welcomeUser"></h3>
+
+  <div id="menu"></div>
+
+  <h2>Your Cart</h2>
+  <ul id="cartList" class="cart-list"></ul>
+  <p><strong>Total:</strong> ₹<span id="total">0</span></p>
+  <button class="btn" onclick="pay()">Proceed to Pay</button>
+</div>
+
+<script>
+  const categories = {
+    Biryanis: [
+      { name: "Chicken Biryani", price: 250 },
+      { name: "Mutton Biryani", price: 300 },
+    ],
+    Starters: [
+      { name: "Chicken 65", price: 150 },
+      { name: "Paneer Tikka", price: 130 },
+    ],
+    Salads: [
+      { name: "Greek Salad", price: 100 },
+      { name: "Caesar Salad", price: 120 },
+    ],
+    Puffs: [
+      { name: "Veg Puff", price: 40 },
+      { name: "Egg Puff", price: 50 },
+    ],
+    Tiffins: [
+      { name: "Idli", price: 30 },
+      { name: "Dosa", price: 40 },
+    ],
+    Wines: [
+      { name: "Red Wine", price: 500 },
+      { name: "White Wine", price: 450 },
+    ]
+  };
+
+  let cart = [];
+
+  function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    if (user && pass) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('welcomeUser').innerText = `Welcome, ${user}`;
+      renderMenu();
+    } else {
+      alert('Please enter username and password.');
+    }
+  }
+
+  function renderMenu() {
+    const menuDiv = document.getElementById('menu');
+    for (let category in categories) {
+      const section = document.createElement('div');
+      section.className = 'menu-section';
+      section.innerHTML = `<h3>${category}</h3>`;
+
+      categories[category].forEach(food => {
+        const item = document.createElement('div');
+        item.className = 'food-item';
+        item.innerHTML = `
+          <span>${food.name} - ₹${food.price}</span>
+          <button class="btn" onclick='addToCart(${JSON.stringify(food)})'>Add</button>
+        `;
+        section.appendChild(item);
+      });
+
+      menuDiv.appendChild(section);
+    }
+  }
+
+  function addToCart(food) {
+    cart.push(food);
+    updateCart();
+  }
+
+  function updateCart() {
+    const cartList = document.getElementById('cartList');
+    const totalDisplay = document.getElementById('total');
+    cartList.innerHTML = '';
+    let total = 0;
+
+    cart.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${item.name}</span><span>₹${item.price}</span>`;
+      cartList.appendChild(li);
+      total += item.price;
+    });
+
+    totalDisplay.innerText = total;
+  }
+
+  function pay() {
+    if (cart.length === 0) {
+      alert('Your cart is empty.');
+    } else {
+      alert('Thank you! Proceeding to payment...');
+    }
+  }
+</script>
+
+</body>
+</html>
